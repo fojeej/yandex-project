@@ -31,7 +31,7 @@ def start_screen():
     string_render = font1.render('Brave Bird', 1, pygame.Color('black'))
     window.blit(string_render, (250, HEIGHT - 400))
 
-    string_render = font2.render('для того, чтобы начать нажмите пробел', 1, pygame.Color('LightSkyBlue'))
+    string_render = font2.render('нажмите любую клавишу, чтобы начать игру', 1, pygame.Color('LightSkyBlue'))
     window.blit(string_render, (200, HEIGHT - 100))
 
     while True:
@@ -44,17 +44,18 @@ def start_screen():
         clock.tick(FPS)
 
 
-def game_over():
-    fon = pygame.transform.scale(pygame.image.load('../pythonProject/data/end.jpeg'), (WIDTH, HEIGHT))
+def game_over(scores):
+    scores = score
+    fon = pygame.transform.scale(pygame.image.load('data/background.jpg'), (WIDTH, HEIGHT))
     window.blit(fon, (0, 0))
     font1 = pygame.font.Font(None, 80)
     font2 = pygame.font.Font(None, 50)
 
-    string_render = font1.render('Game Over', 1, pygame.Color('black'))
-    window.blit(string_render, (250, HEIGHT - 500))
+    string_rendered = font1.render('Game Over', 1, pygame.Color('black'))
+    window.blit(string_rendered, (250, HEIGHT - 500))
 
-    string_render = font2.render('Очки: ' + str(score), 1, pygame.Color('grey'))
-    window.blit(string_render, (50, HEIGHT - 100))
+    string_rendered = font2.render('Очки: ' + str(scores), 1, pygame.Color('DimGray'))
+    window.blit(string_rendered, (50, HEIGHT - 100))
 
     while True:
         for event in pygame.event.get():
@@ -97,7 +98,7 @@ speed = 3
 gate_size = 200
 gate_pos = HEIGHT // 2
 
-bgs.append(pygame.Rect(0, 0, 77, 266))
+bgs.append(pygame.Rect(0, 0, 101, 350))
 
 start_screen()
 play = True
@@ -133,7 +134,7 @@ while play:
             pipes.remove(pipe)
             if pipe in crash_pipes:
                 crash_pipes.remove(pipe)
-                
+
     if status == 'start':
         if click and time == 0 and len(pipes) == 0:
             status = 'play'
@@ -185,7 +186,7 @@ while play:
             status = 'game over'
             time = 120
     else:
-        over()
+        game_over(score)
 
         # Отрисовка
         window.fill(pygame.Color('black'))

@@ -133,6 +133,59 @@ while play:
             pipes.remove(pipe)
             if pipe in crash_pipes:
                 crash_pipes.remove(pipe)
+                
+    if status == 'start':
+        if click and time == 0 and len(pipes) == 0:
+            status = 'play'
+
+        p += (HEIGHT // 2 - p) * 0.1
+        player.y = p
+
+    elif status == 'play':
+        if click:
+            a = -2
+        else:
+            a = 0
+
+        p += s
+        s = (s + a + 1) * 0.98
+        player.y = p
+
+        if len(pipes) == 0 or pipes[-1].x < WIDTH - 200:
+            pipes.append(pygame.Rect(WIDTH, 0, 52, gate_pos - gate_size // 2))
+            pipes.append(pygame.Rect(WIDTH, gate_pos + gate_size // 2, 52, HEIGHT - gate_pos + gate_size // 2))
+
+            gate_pos += randint(-100, 100)
+            if gate_pos < gate_size:
+                gate_pos = gate_size
+            elif gate_pos > HEIGHT - gate_size:
+                gate_pos = HEIGHT - gate_size
+
+        if player.top < 0 or player.bottom > HEIGHT:
+            status = 'fall'
+
+        for pipe in pipes:
+            if player.colliderect(pipe):
+                status = 'fall'
+
+            if pipe.right < player.left and pipe not in crash_pipes:
+                crash_pipes.append(pipe)
+                score += 5
+                speed = 3 + score // 100
+    elif status == 'fall':
+        fall_snd.play()
+        s, a = 0, 0
+        gate_pos = HEIGHT // 2
+
+        lives -= 1
+        if lives > 0:
+            status = 'start'
+            time = 60
+        else:
+            status = 'game over'
+            time = 120
+    else:
+        over()
 
         # Отрисовка
         window.fill(pygame.Color('black'))
